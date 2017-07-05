@@ -1,0 +1,46 @@
+1. Go to sbin directory
+cd /opt/ibm/ldap/V6.3/sbin/
+
+ 2.  adding a new LDAP user 
+./idsadduser -u wasldap -w sarasu10 -l /home/wasldap -g wasldap
+
+ 3. Creating an Instance for the above LDAP user 
+ ./idsicrt -I wasldap -l /home/wasldap -p 1112 -t wasldap -e websphereappserver -g jidugueidiko -n
+
+ 4. adding DN name and Password to the instance 
+./idsdnpw -u cn=root -p sarasu10 -I wasldap -n
+
+  5. Configuring DataBase 
+ ./idscfgdb -I wasldap -a wasldap -t wasldap -l /home/wasldap -w sarasu10 -n
+
+ 6. Starting Ldap Server 
+ ./ibmslapd -I wasldap
+
+7. Stoping Ldap Server
+ ./ibmslapd -I wasldap -k
+
+ 8. Adding Suffix to the Instance inorder to add entries 
+ ./idscfgsuf -s dc=ibm,dc=com -I wasldap -n
+
+
+9. Importing the ldif file into db
+./idsldif2db -i /tmp/setup2.ldif -I wasldap
+./idsldif2db -i /tmp/setup3.ldif -I wasldap
+./idsldif2db -i /tmp/setup4.ldif -I wasldap
+
+10. Starting Ldap Server 
+ ./ibmslapd -I wasldap
+
+11. Go to bin folder
+
+ ./idsldapsearch -b dc=ibm,dc=com -h 192.168.1.79 -w sarasu10 -D cn=root -p 1112 objectclass=*
+
+ ./idsldapsearch -b dc=ibm,dc=com -w sarasu10 -D cn=root -p 1112 objectclass=*
+
+12. Delete ldap 
+
+ldapdelete -D cn=root -w sarasu10 'uid=wasadmin,cn=roles,dc=ibm,dc=com'
+
+
+./manageprofiles.sh -create -templatePath /opt/IBM/WebSphere/AppServer/profileTemplates/default -enableAdminSecurity true -adminUserName wasadmin -adminPassword sarasu10 -samplesPassword webas -hostName was.eidikointernal.com
+
